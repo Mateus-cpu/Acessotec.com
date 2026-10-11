@@ -1,0 +1,40 @@
+{
+  "pages": {
+    "desktop": {
+      "height": 11630,
+      "overflow": null,
+      "consoleErrors": [],
+      "failedRequests": [],
+      "brokenImages": [
+        ""
+      ]
+    },
+    "mobile": {
+      "height": 16055,
+      "overflow": {
+        "scrollWidth": 430,
+        "clientWidth": 390
+      },
+      "consoleErrors": [],
+      "failedRequests": [],
+      "brokenImages": [
+        "",
+        "assets/img/logo-generali.png",
+        "assets/img/logo-helvetia.png",
+        "assets/img/logo-baloise.png",
+        "assets/img/logo-smile.png",
+        "assets/img/logo-generali.png",
+        "assets/img/logo-helvetia.png",
+        "assets/img/logo-baloise.png",
+        "assets/img/logo-smile.png"
+      ]
+    },
+    "legal-desktop": {
+      "height": 6427,
+      "overflow": null,
+      "consoleErrors": [],
+      "failedRequests": [],
+      "brokenImages": []
+    }
+  }
+}
