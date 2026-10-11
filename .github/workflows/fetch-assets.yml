@@ -1,0 +1,49 @@
+name: Fetch original site assets
+
+# Downloads the photos and logos of the current carrosseriecornaux.ch (Wix) site,
+# builds the optimized images the redesign uses (assets/img), keeps reference
+# screenshots in _source/ and takes QA screenshots of the new site.
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/jolly-ride-zpzd9s]
+    paths:
+      - '.github/workflows/fetch-assets.yml'
+      - 'tools/fetch-assets/**'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fetch-assets-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install tools
+        working-directory: tools/fetch-assets
+        run: |
+          npm install --no-audit --no-fund
+          npx playwright install --with-deps chromium
+      - name: Fetch originals, build assets/img, reference screenshots
+        working-directory: tools/fetch-assets
+        run: node run.js
+      - name: QA screenshots of the new site
+        working-directory: tools/fetch-assets
+        run: node qa.js
+      - name: Commit results
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A _source assets/img assets/js/social.json
+          git commit -m "chore: build site images from the original site (automated)" || echo "nothing to commit"
+          git push origin HEAD:${{ github.ref_name }}
