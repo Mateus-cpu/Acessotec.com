@@ -1,0 +1,10 @@
+{
+  "name": "fetch-assets",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Downloads the original carrosseriecornaux.ch media, optimizes it and takes reference screenshots.",
+  "dependencies": {
+    "playwright": "1.47.2",
+    "sharp": "0.33.5"
+  }
+}
