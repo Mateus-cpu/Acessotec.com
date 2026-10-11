@@ -1,0 +1,45 @@
+name: Deploy preview to GitHub Pages
+
+# Publishes the redesigned site (index.html + assets) as a public preview.
+# Runs automatically after the images have been built, or manually.
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["Fetch original site assets"]
+    types: [completed]
+    branches: [claude/jolly-ride-zpzd9s]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: claude/jolly-ride-zpzd9s
+      - name: Assemble the site
+        run: |
+          mkdir -p _site
+          cp index.html politique-de-confidentialite.html _site/
+          cp -R assets _site/assets
+          test -f _site/assets/img/hero.webp || echo "::warning::assets/img is empty — run the 'Fetch original site assets' workflow first"
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4
